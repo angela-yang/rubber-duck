@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { loadDuck } from "../utils/preloader";
 
-export default function DuckCanvas({ skin, scale, squeezed, onClick, glbUrl }) {
+export default function Duck({ skin, scale, squeezed, onClick, glbUrl }) {
   const mountRef = useRef(null);
   const duckGroupRef = useRef(null);
   const animFrameRef = useRef(null);
@@ -32,8 +32,8 @@ export default function DuckCanvas({ skin, scale, squeezed, onClick, glbUrl }) {
     scene.add(duckGroup);
     duckGroupRef.current = duckGroup;
 
-    new GLTFLoader().load(glbUrl, (gltf) => {
-      const model = gltf.scene;
+    loadDuck(glbUrl, (gltf) => {
+      const model = gltf.scene.clone(true);
       const box = new THREE.Box3().setFromObject(model);
       const size = box.getSize(new THREE.Vector3());
       const max = Math.max(size.x, size.y, size.z);

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 import NavBar from "./components/NavBar";
 import About from "./components/About";
@@ -8,8 +8,9 @@ import DuckName from "./components/DuckName";
 import SkinSwitcher from "./components/SkinSwitcher";
 import MicButton from "./components/MicButton";
 import TranscriptPanel from "./components/TranscriptPanel";
+import LoadingScreen   from "./components/LoadingScreen";
+import { preloadAllDucks } from "./utils/preloader";
 
-const GLB_URL = "ducks/duck.glb";
 const DUCK_SKINS = [
   { id: "classic", label: "Classic Duck", color: "#FFD700", glbUrl: "/ducks/duck.glb", desc: "The OG." },
   { id: "bunny", label: "Bunny Duck", color: "#87CEEB", glbUrl: "/ducks/bunny.glb",  desc: "Cute and fluffy." },
@@ -21,6 +22,8 @@ const DUCK_SKINS = [
 ];
 
 export default function App() {
+  const [loadProgress, setLoadProgress] = useState(0);
+  const [ready, setReady] = useState(false);
   const [page, setPage] = useState("duck");
   const [showHelp, setShowHelp] = useState(false);
   const [skinIdx, setSkinIdx] = useState(0);
@@ -33,8 +36,17 @@ export default function App() {
   const [micError, setMicError] = useState("");
   const recognitionRef    = useRef(null);
   const fullTranscriptRef = useRef("");
+
   const skin = DUCK_SKINS[skinIdx];
   const audio = new Audio("/squeak.mp3");
+
+  useEffect(() => {
+    preloadAllDucks(DUCK_SKINS, (loaded, total) => {
+      setLoadProgress(loaded / total);
+    }).then(() => {
+      setTimeout(() => setReady(true), 400);
+    });
+  }, []);
 
   const handleDuckClick = useCallback(() => {
     audio.currentTime = 0;
@@ -123,6 +135,8 @@ export default function App() {
         }
       `}</style>
 
+      {!ready && <LoadingScreen progress={loadProgress} />}
+
       <div
         style={{
           minHeight: "100vh",
@@ -131,6 +145,9 @@ export default function App() {
           background: bgGradient,
           transition: "background 0.8s ease",
           fontFamily: "'DM Sans', sans-serif",
+          opacity: ready ? 1 : 0,
+          pointerEvents: ready ? "auto" : "none",
+          transition: "opacity 0.4s ease, background 0.8s ease",
         }}
       >
         <NavBar page={page} onNavigate={setPage} onHelp={() => setShowHelp(true)} />
