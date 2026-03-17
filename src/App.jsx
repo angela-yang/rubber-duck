@@ -14,8 +14,10 @@ const DUCK_SKINS = [
   { id: "classic", label: "Classic Duck", color: "#FFD700", glbUrl: "/ducks/duck.glb", desc: "The OG." },
   { id: "bunny", label: "Bunny Duck", color: "#87CEEB", glbUrl: "/ducks/bunny.glb",  desc: "Cute and fluffy." },
   { id: "dino", label: "Dino Duck", color: "#90C67C", glbUrl: "/ducks/duck.glb",  desc: "Rawr." },
-  { id: "alien", label: "Alien Duck", color: "#2C2C54", glbUrl: "/ducks/duck.glb",  desc: "Zlorp." },
-  { id: "flower", label: "Flower Duck", color: "#FFB6C1", glbUrl: "/ducks/flower.glb",  desc: "Delicate as a daisy." },
+  { id: "snorlax", label: "Snorlax Duck", color: "#2C2C54", glbUrl: "/ducks/snorlax.glb",  desc: "Zzzz." },
+  { id: "flower", label: "Flower Duck", color: "#FFB6C1", glbUrl: "/ducks/flower.glb",  desc: "Full of whimsy." },
+  { id: "pizza", label: "Pizza Duck", color: "#ffd1b6", glbUrl: "/ducks/duck.glb",  desc: "Yum." },
+  { id: "perry", label: "Perry the Duck", color: "#b6f4ff", glbUrl: "/ducks/duck.glb",  desc: "A duck? Perry the Duck!" },
 ];
 
 export default function App() {
