@@ -8,22 +8,22 @@ import DuckName from "./components/DuckName";
 import SkinSwitcher from "./components/SkinSwitcher";
 import MicButton from "./components/MicButton";
 import TranscriptPanel from "./components/TranscriptPanel";
-import LoadingScreen   from "./components/LoadingScreen";
+import LoadingScreen from "./components/LoadingScreen";
 import { preloadAllDucks } from "./utils/preloader";
 
 const DUCK_SKINS = [
   { id: "classic", label: "Classic Duck", color: "#FFD700", glbUrl: "/ducks/duck.glb", desc: "The OG." },
-  { id: "bunny", label: "Bunny Duck", color: "#87CEEB", glbUrl: "/ducks/bunny.glb",  desc: "Cute and fluffy." },
-  { id: "dino", label: "Dino Duck", color: "#90C67C", glbUrl: "/ducks/duck.glb",  desc: "Rawr." },
-  { id: "snorlax", label: "Snorlax Duck", color: "#2C2C54", glbUrl: "/ducks/snorlax.glb",  desc: "Zzzz." },
-  { id: "flower", label: "Flower Duck", color: "#FFB6C1", glbUrl: "/ducks/flower.glb",  desc: "Full of whimsy." },
-  { id: "pizza", label: "Pizza Duck", color: "#ffd1b6", glbUrl: "/ducks/duck.glb",  desc: "Yum." },
-  { id: "perry", label: "Perry the Duck", color: "#b6f4ff", glbUrl: "/ducks/duck.glb",  desc: "A duck? Perry the Duck!" },
+  { id: "bunny", label: "Bunny Duck", color: "#87CEEB", glbUrl: "/ducks/bunny.glb", desc: "Cute and fluffy." },
+  { id: "flower", label: "Flower Duck", color: "#FFB6C1", glbUrl: "/ducks/flower.glb", desc: "Full of whimsy." },
+  { id: "dino", label: "Dino Duck", color: "#90C67C", glbUrl: "/ducks/duck.glb", desc: "Rawr." },
+  { id: "snorlax", label: "Snorlax Duck", color: "#2C2C54", glbUrl: "/ducks/snorlax.glb", desc: "Zzzz." },
+  { id: "perry", label: "Perry the Duck", color: "#b6f4ff", glbUrl: "/ducks/duck.glb", desc: "A duck? Perry the Duck!" },
 ];
 
 export default function App() {
   const [loadProgress, setLoadProgress] = useState(0);
   const [ready, setReady] = useState(false);
+  const [selecting, setSelecting] = useState(true);
   const [page, setPage] = useState("duck");
   const [showHelp, setShowHelp] = useState(false);
   const [skinIdx, setSkinIdx] = useState(0);
@@ -34,11 +34,11 @@ export default function App() {
   const [transcriptLines, setTranscriptLines] = useState([]);
   const [summary, setSummary] = useState("");
   const [micError, setMicError] = useState("");
-  const recognitionRef    = useRef(null);
+  const recognitionRef = useRef(null);
   const fullTranscriptRef = useRef("");
 
+  const audioRef = useRef(new Audio("/squeak.mp3"));
   const skin = DUCK_SKINS[skinIdx];
-  const audio = new Audio("/squeak.mp3");
 
   useEffect(() => {
     preloadAllDucks(DUCK_SKINS, (loaded, total) => {
@@ -49,10 +49,20 @@ export default function App() {
   }, []);
 
   const handleDuckClick = useCallback(() => {
+    if (selecting) return; 
+    const audio = audioRef.current;
     audio.currentTime = 0;
     audio.play().catch(() => {});
     setSqueezed(true);
     setTimeout(() => setSqueezed(false), 300);
+  }, [selecting]);
+
+  const handleSelect = useCallback(() => {
+    setSelecting(false);
+  }, []);
+
+  const handleReskin = useCallback(() => {
+    setSelecting(true);
   }, []);
 
   const startListening = useCallback(() => {
@@ -62,7 +72,6 @@ export default function App() {
       return;
     }
     setMicError("");
-
     const rec = new SR();
     rec.continuous = true;
     rec.interimResults = true;
@@ -74,11 +83,9 @@ export default function App() {
         if (e.results[i].isFinal) finalText += e.results[i][0].transcript;
       }
       if (!finalText) return;
-
       fullTranscriptRef.current += " " + finalText;
       setTranscriptLines((prev) => {
         const next = [...prev, finalText.trim()];
-        // Duck grows every 3 lines, capped at 1.6×
         if (next.length % 5 === 0) setDuckScale((s) => Math.min(s + 0.06, 1.6));
         return next;
       });
@@ -137,76 +144,114 @@ export default function App() {
 
       {!ready && <LoadingScreen progress={loadProgress} />}
 
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          background: bgGradient,
-          transition: "background 0.8s ease",
-          fontFamily: "'DM Sans', sans-serif",
-          opacity: ready ? 1 : 0,
-          pointerEvents: ready ? "auto" : "none",
-          transition: "opacity 0.4s ease, background 0.8s ease",
-        }}
-      >
+      <div style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: bgGradient,
+        fontFamily: "'DM Sans', sans-serif",
+        opacity: ready ? 1 : 0,
+        pointerEvents: ready ? "auto" : "none",
+        transition: "opacity 0.4s ease, background 0.8s ease",
+      }}>
         <NavBar page={page} onNavigate={setPage} onHelp={() => setShowHelp(true)} />
 
         {page === "about" && <About />}
+
         {page === "duck" && (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingBottom: "20px",
-            }}
-          >
-            <DuckName name={duckName} onChange={setDuckName} />
-            <div
-              style={{
-                width: "min(380px, 85vw)",
-                height: "min(380px, 85vw)",
-                marginTop: "8px",
-              }}
-            >
+          <div style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingBottom: "20px",
+            gap: "4px",
+          }}>
+
+            <p style={{
+              fontSize: "16px",
+              color: "#a6a3a3",
+              fontFamily: "'DM Sans', sans-serif",
+              letterSpacing: "0.04em",
+              transition: "opacity 0.3s",
+              opacity: selecting ? 1 : 0,
+              pointerEvents: "none",
+            }}>
+              pick your duck
+            </p>
+
+            {!selecting && <DuckName name={duckName} onChange={setDuckName} />}
+
+            <div style={{
+              width: "min(380px, 85vw)",
+              height: "min(380px, 85vw)",
+              marginTop: "4px",
+            }}>
               <Duck
                 skin={skin}
                 scale={duckScale}
                 squeezed={squeezed}
                 onClick={handleDuckClick}
                 glbUrl={skin.glbUrl}
+                rotating={selecting}
               />
             </div>
 
-            <SkinSwitcher currentIdx={skinIdx} onChange={setSkinIdx} />
+            <SkinSwitcher
+              skins={DUCK_SKINS}
+              currentIdx={skinIdx}
+              onChange={setSkinIdx}
+              onSelect={handleSelect}
+              selecting={selecting}
+            />
 
-            <div style={{ marginTop: "24px" }}>
-              <MicButton
-                listening={listening}
-                transcriptCount={transcriptLines.length}
-                onToggle={toggleMic}
-                error={micError}
-              />
-            </div>
+            {!selecting && (
+              <>
+                <button
+                  onClick={handleReskin}
+                  style={{
+                    marginTop: "2px",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                    color: "#a6a3a3",
+                    fontFamily: "'DM Sans', sans-serif",
+                    textDecoration: "underline",
+                    textUnderlineOffset: "3px",
+                  }}
+                >
+                  change duck
+                </button>
 
-            {duckScale > 1.05 && (
-              <div style={{ marginTop: "8px", fontSize: "16px", color: "#aaa" }}>
-                {duckName} is{" "}
-                {duckScale > 1.4 ? "enormous" : duckScale > 1.2 ? "getting big!" : "growing"}
-              </div>
+                <div style={{ marginTop: "20px" }}>
+                  <MicButton
+                    listening={listening}
+                    transcriptCount={transcriptLines.length}
+                    onToggle={toggleMic}
+                    error={micError}
+                  />
+                </div>
+
+                {duckScale > 1.05 && (
+                  <div style={{ marginTop: "8px", fontSize: "14px", color: "#aaa" }}>
+                    {duckName} is{" "}
+                    {duckScale > 1.4 ? "enormous" : duckScale > 1.2 ? "getting big!" : "growing"}
+                  </div>
+                )}
+
+                {showTranscript && (
+                  <TranscriptPanel
+                    lines={transcriptLines}
+                    summary={summary}
+                    duckName={duckName}
+                    onClear={clearTranscript}
+                  />
+                )}
+              </>
             )}
 
-            {showTranscript && (
-              <TranscriptPanel
-                lines={transcriptLines}
-                summary={summary}
-                duckName={duckName}
-                onClear={clearTranscript}
-              />
-            )}
           </div>
         )}
 

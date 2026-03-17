@@ -10,6 +10,7 @@ export default function MicButton({ listening, transcriptCount, onToggle, error 
           width: "60px",
           height: "60px",
           borderRadius: "50%",
+          marginTop: "10px",
           border: "none",
           cursor: "pointer",
           background: listening ? "#FF4444" : "#2a2a2a",
