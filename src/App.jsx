@@ -9,13 +9,13 @@ import SkinSwitcher from "./components/SkinSwitcher";
 import MicButton from "./components/MicButton";
 import TranscriptPanel from "./components/TranscriptPanel";
 
-const GLB_URL = "duck.glb";
+const GLB_URL = "ducks/duck.glb";
 const DUCK_SKINS = [
-  { id: "classic", label: "Classic Duck", color: "#FFD700", bodyColor: "#FFD700", billColor: "#FF8C00", desc: "The OG." },
-  { id: "flower", label: "Flower Duck", color: "#FFB6C1", bodyColor: "#FFB6C1", billColor: "#FF69B4", desc: "Full of whimsy." },
-  { id: "dino", label: "Dino Duck", color: "#90C67C", bodyColor: "#90C67C", billColor: "#5A8F3C", desc: "Rawr." },
-  { id: "alien", label: "Alien Duck", color: "#2C2C54", bodyColor: "#2C2C54", billColor: "#7B2FBE", desc: "Zlorp." },
-  { id: "bunny", label: "Bunny Duck", color: "#87CEEB", bodyColor: "#87CEEB", billColor: "#4169E1", desc: "Cute and fluffy." },
+  { id: "classic", label: "Classic Duck", color: "#FFD700", glbUrl: "/ducks/duck.glb", desc: "The OG." },
+  { id: "bunny", label: "Bunny Duck", color: "#87CEEB", glbUrl: "/ducks/bunny.glb",  desc: "Cute and fluffy." },
+  { id: "dino", label: "Dino Duck", color: "#90C67C", glbUrl: "/ducks/duck.glb",  desc: "Rawr." },
+  { id: "alien", label: "Alien Duck", color: "#2C2C54", glbUrl: "/ducks/duck.glb",  desc: "Zlorp." },
+  { id: "flower", label: "Flower Duck", color: "#FFB6C1", glbUrl: "/ducks/duck.glb",  desc: "Full of whimsy." },
 ];
 
 export default function App() {
@@ -158,7 +158,7 @@ export default function App() {
                 scale={duckScale}
                 squeezed={squeezed}
                 onClick={handleDuckClick}
-                glbUrl={GLB_URL}
+                glbUrl={skin.glbUrl}
               />
             </div>
 
@@ -174,7 +174,7 @@ export default function App() {
             </div>
 
             {duckScale > 1.05 && (
-              <div style={{ marginTop: "8px", fontSize: "11px", color: "#aaa" }}>
+              <div style={{ marginTop: "8px", fontSize: "16px", color: "#aaa" }}>
                 {duckName} is{" "}
                 {duckScale > 1.4 ? "enormous" : duckScale > 1.2 ? "getting big!" : "growing"}
               </div>

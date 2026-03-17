@@ -22,7 +22,7 @@ export default function TranscriptPanel({ lines, summary, duckName, onClear }) {
         fontFamily: "'DM Sans', sans-serif",
       }}
     >
-      <div style={{ padding: "14px 18px 8px", fontSize: "14px", color: "#333", lineHeight: 1.65 }}>
+      <div style={{ padding: "14px 18px 8px", fontSize: "16px", color: "#333", lineHeight: 1.65 }}>
         {lines.length === 0 ? (
           <span style={{ color: "#aaa", fontStyle: "italic" }}>
             Start talking… {duckName} is listening!
@@ -40,7 +40,7 @@ export default function TranscriptPanel({ lines, summary, duckName, onClear }) {
           style={{
             borderTop: "1px solid rgba(0,0,0,0.06)",
             padding: "8px 18px",
-            fontSize: "12px",
+            fontSize: "16px",
             color: "#666",
             background: "rgba(255,248,200,0.7)",
             borderRadius: "0 0 18px 18px",
@@ -56,7 +56,7 @@ export default function TranscriptPanel({ lines, summary, duckName, onClear }) {
           style={{
             display: "block",
             margin: "0 auto 10px",
-            fontSize: "11px",
+            fontSize: "16px",
             color: "#bbb",
             background: "none",
             border: "none",

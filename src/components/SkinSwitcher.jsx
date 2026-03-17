@@ -1,9 +1,9 @@
 const DUCK_SKINS = [
-  { id: "classic", label: "Classic Duck", color: "#FFD700", bodyColor: "#FFD700", billColor: "#FF8C00", desc: "The OG." },
-  { id: "flower", label: "Flower Duck", color: "#FFB6C1", bodyColor: "#FFB6C1", billColor: "#FF69B4", desc: "Full of whimsy." },
-  { id: "dino", label: "Dino Duck", color: "#90C67C", bodyColor: "#90C67C", billColor: "#5A8F3C", desc: "Rawr." },
-  { id: "alien", label: "Alien Duck", color: "#2C2C54", bodyColor: "#2C2C54", billColor: "#7B2FBE", desc: "Zlorp." },
-  { id: "bunny", label: "Bunny Duck", color: "#87CEEB", bodyColor: "#87CEEB", billColor: "#4169E1", desc: "Cute and fluffy." },
+  { id: "classic", label: "Classic Duck", color: "#FFD700", glbUrl: "/ducks/duck.glb", desc: "The OG." },
+  { id: "bunny", label: "Bunny Duck", color: "#87CEEB", glbUrl: "/ducks/bunny.glb",  desc: "Cute and fluffy." },
+  { id: "dino", label: "Dino Duck", color: "#90C67C", glbUrl: "/ducks/duck.glb",  desc: "Rawr." },
+  { id: "alien", label: "Alien Duck", color: "#2C2C54", glbUrl: "/ducks/duck.glb",  desc: "Zlorp." },
+  { id: "flower", label: "Flower Duck", color: "#FFB6C1", glbUrl: "/ducks/duck.glb",  desc: "Full of whimsy." },
 ];
 
 const btnStyle = {
