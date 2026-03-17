@@ -22,7 +22,7 @@ export default function App() {
   const [page, setPage] = useState("duck");
   const [showHelp, setShowHelp] = useState(false);
   const [skinIdx, setSkinIdx] = useState(0);
-  const [duckName, setDuckName] = useState("duck name");
+  const [duckName, setDuckName] = useState("Mr. Duck");
   const [squeezed, setSqueezed] = useState(false);
   const [duckScale, setDuckScale] = useState(1.0);
   const [listening, setListening] = useState(false);
@@ -65,7 +65,7 @@ export default function App() {
       setTranscriptLines((prev) => {
         const next = [...prev, finalText.trim()];
         // Duck grows every 3 lines, capped at 1.6×
-        if (next.length % 3 === 0) setDuckScale((s) => Math.min(s + 0.06, 1.6));
+        if (next.length % 5 === 0) setDuckScale((s) => Math.min(s + 0.06, 1.6));
         return next;
       });
     };
@@ -78,7 +78,7 @@ export default function App() {
       setListening(false);
       const words = fullTranscriptRef.current.trim().split(/\s+/);
       if (words.length > 4) {
-        setSummary(`You spoke ${words.length} words. Great debugging session with ${duckName}! 🦆`);
+        setSummary(`You spoke ${words.length} words. Great debugging session with ${duckName}!`);
       }
     };
 

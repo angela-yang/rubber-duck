@@ -25,7 +25,7 @@ export default function TranscriptPanel({ lines, summary, duckName, onClear }) {
       <div style={{ padding: "14px 18px 8px", fontSize: "14px", color: "#333", lineHeight: 1.65 }}>
         {lines.length === 0 ? (
           <span style={{ color: "#aaa", fontStyle: "italic" }}>
-            Start talking… {duckName} is listening 🦆
+            Start talking… {duckName} is listening!
           </span>
         ) : (
           lines.map((line, i) => (
@@ -46,7 +46,6 @@ export default function TranscriptPanel({ lines, summary, duckName, onClear }) {
             borderRadius: "0 0 18px 18px",
           }}
         >
-          <strong style={{ color: "#a07800" }}>💡 </strong>
           {summary}
         </div>
       )}

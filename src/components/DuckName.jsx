@@ -10,7 +10,7 @@ export default function DuckName({ name, onChange }) {
   }, [editing]);
 
   const commit = () => {
-    onChange(draft.trim() || "duck name");
+    onChange(draft.trim() || "Mr. Duck");
     setEditing(false);
   };
 
