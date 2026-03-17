@@ -23,8 +23,8 @@ export default function DuckCanvas({ skin, scale, squeezed, onClick, glbUrl }) {
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    const dir = new THREE.DirectionalLight(0xffffff, 1.7);
     dir.position.set(3, 5, 3);
     scene.add(dir);
 
