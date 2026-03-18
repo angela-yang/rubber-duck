@@ -183,26 +183,24 @@ export default function App() {
 
             {!selecting && <DuckName name={duckName} onChange={setDuckName} />}
 
-            <div style={{
-              width: "min(380px, 85vw)",
-              height: "min(380px, 85vw)",
-              marginTop: "4px",
-            }}>
-              <Duck
-                skin={skin}
-                scale={duckScale}
-                squeezed={squeezed}
-                onClick={handleDuckClick}
-                glbUrl={skin.glbUrl}
-                rotating={selecting}
-              />
+            <div style={{ width: "min(380px, 85vw)", height: "min(380px, 85vw)", marginTop: "4px" }}>
+              {ready && (
+                <Duck
+                  skin={skin}
+                  scale={duckScale}
+                  squeezed={squeezed}
+                  onClick={handleDuckClick}
+                  glbUrl={skin.glbUrl}
+                  rotating={selecting}
+                />
+              )}
             </div>
 
             <SkinSwitcher
               skins={DUCK_SKINS}
               currentIdx={skinIdx}
               onChange={setSkinIdx}
-              onSelect={handleSelect}
+              onSelect={() => setSelecting(false)}
               selecting={selecting}
             />
 

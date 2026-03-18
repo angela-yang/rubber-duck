@@ -7,7 +7,7 @@ export default function Duck({ skin, scale, squeezed, onClick, glbUrl, rotating 
   const duckGroupRef = useRef(null);
   const animFrameRef = useRef(null);
   const clockRef = useRef(new THREE.Clock());
-  const rotatingRef = useRef(rotating); 
+  const rotatingRef = useRef(rotating);
   const sceneReadyRef = useRef(false);
 
   useEffect(() => { rotatingRef.current = rotating; }, [rotating]);
@@ -29,27 +29,38 @@ export default function Duck({ skin, scale, squeezed, onClick, glbUrl, rotating 
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     mount.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    // Lights — directional casts a real shadow onto the ground plane
+    scene.add(new THREE.AmbientLight(0xffffff, 1.0));
     const dir = new THREE.DirectionalLight(0xffffff, 1.7);
-    dir.position.set(3, 5, 3);
+    dir.position.set(2, 6, 3);
     dir.castShadow = true;
+    dir.shadow.mapSize.set(512, 512);
+    dir.shadow.camera.near = 0.5;
+    dir.shadow.camera.far  = 20;
+    dir.shadow.camera.left   = -2;
+    dir.shadow.camera.right  =  2;
+    dir.shadow.camera.top    =  2;
+    dir.shadow.camera.bottom = -2;
+    dir.shadow.bias = -0.002;
     scene.add(dir);
 
-    const blob = new THREE.Mesh(
-      new THREE.CircleGeometry(0.55, 32),
-      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.08 })
+    // Invisible ground plane — receives the duck-shaped shadow
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(10, 10),
+      new THREE.ShadowMaterial({ opacity: 0.18 })
     );
-    blob.rotation.x = -Math.PI / 2;
-    blob.position.y = -0.86;
-    scene.add(blob);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.86;
+    ground.receiveShadow = true;
+    scene.add(ground);
 
     const duckGroup = new THREE.Group();
     scene.add(duckGroup);
     duckGroupRef.current = duckGroup;
 
     mount._renderer = renderer;
-    mount._camera = camera;
-    mount._scene = scene;
+    mount._camera   = camera;
+    mount._scene    = scene;
     sceneReadyRef.current = true;
 
     const animate = () => {
@@ -86,7 +97,6 @@ export default function Duck({ skin, scale, squeezed, onClick, glbUrl, rotating 
     const group = duckGroupRef.current;
     if (!group) return;
 
-    // Clear previous model
     while (group.children.length) group.remove(group.children[0]);
 
     const tryLoad = () => {
@@ -103,6 +113,7 @@ export default function Duck({ skin, scale, squeezed, onClick, glbUrl, rotating 
       const bbox2 = new THREE.Box3().setFromObject(model);
       model.position.y -= bbox2.min.y + 0.86;
 
+      // Every mesh casts shadow → shadow matches duck silhouette
       model.traverse(c => { if (c.isMesh) c.castShadow = true; });
       group.add(model);
       group.rotation.y = -1.57;
@@ -120,12 +131,11 @@ export default function Duck({ skin, scale, squeezed, onClick, glbUrl, rotating 
     }
   }, [glbUrl]);
 
-  // Squeeze animation
   useEffect(() => {
     if (!squeezed || !duckGroupRef.current) return;
     const group = duckGroupRef.current;
     const start = performance.now();
-    const tick  = (now) => {
+    const tick = (now) => {
       const t = (now - start) / 200;
       if (t < 1) {
         const s = 1 - Math.sin(t * Math.PI) * 0.15;
